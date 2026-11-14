@@ -1,4 +1,10 @@
-# angry-orkestra — Sumber Kebenaran Tunggal untuk Skill & Agent
+<p align="center">
+  <img src="angry-orkestra.png" alt="Angry Orkestra" width="400">
+</p>
+
+<h1 align="center">angry-orkestra</h1>
+
+<p align="center"><b>Sumber Kebenaran Tunggal untuk Skill & Agent</b></p>
 
 > Konsep B (best practice): semua skill & agent disimpan di sini (versioned, portabel),
 > lalu di-sync ke platform aktif (OpenCode / Claude / Cursor).
