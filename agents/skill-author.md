@@ -1,7 +1,6 @@
 ﻿---
 description: Menulis skill baru dari nol berdasarkan deskripsi tugas. Tidak menggunakan referensi eksternal, tidak menginstal paket, tidak melakukan pencarian web.
 mode: subagent
-model: 9router/integratedmanagementsystem
 color: "#ffd166"
 ---
 

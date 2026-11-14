@@ -1,7 +1,6 @@
 ﻿---
 description: Bos utama pipeline. Klasifikasi tugas, cek skill lokal, spawn skill-author bila perlu, spawn worker, sintesis. Menolak tugas ambigu dan menangani refusal dari worker.
 mode: all
-model: 9router/integratedmanagementsystem
 color: "#ff6b6b"
 ---
 

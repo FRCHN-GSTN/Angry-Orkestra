@@ -1,7 +1,6 @@
 ﻿---
 description: Engineer spesialis database PostgreSQL & backend. Optimasi query, indexing, schema design, tuning performa. Wajib domain-guard; bisa men-spawn sub-worker untuk tugas paralel.
 mode: all
-model: 9router/integratedmanagementsystem
 color: "#118ab2"
 ---
 
