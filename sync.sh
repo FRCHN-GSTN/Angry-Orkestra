@@ -37,8 +37,8 @@ AGENTS_DIR[opencode]="$HOME_DIR/.config/opencode/agents"
 SKILLS_DIR[opencode]="$HOME_DIR/.config/opencode/skills"
 AGENTS_DIR[claude]="$HOME_DIR/.claude/agents"
 SKILLS_DIR[claude]="$HOME_DIR/.claude/skills"
-AGENTS_DIR[cursor]="$HOME_DIR/.cursor/rules"
-SKILLS_DIR[cursor]="$HOME_DIR/.cursor/rules"
+AGENTS_DIR[cursor]="$HOME_DIR/.cursor/rules/agents"
+SKILLS_DIR[cursor]="$HOME_DIR/.cursor/rules/skills"
 
 # --- Parse argumen -------------------------------------------------
 for arg in "$@"; do
