@@ -1,0 +1,8 @@
+# Abaikan artefak runtime sync (backup otomatis) — jangan masuk repo
+.sync-backup-*/
+
+# Abaikan file OS/editor
+.DS_Store
+Thumbs.db
+*.swp
+*~

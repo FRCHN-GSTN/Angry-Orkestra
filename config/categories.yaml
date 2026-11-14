@@ -1,0 +1,25 @@
+# Peta kategori tugas → worker agent + skill.
+# Tambah kategori baru dengan menambah satu blok di bawah.
+# NOTE: worker_agent HARUS ada di agents/, skill_name HARUS ada di skills/ (atau akan
+# di-generate oleh skill-author saat runtime via M1).
+
+version: 3
+
+categories:
+  - id: mobile-app
+    keywords: [mobile, android, ios, iphone, flutter, react native, app, aplikasi]
+    worker_agent: flutter-mobile-dev
+    skill_name: mobile-app
+
+  - id: database-optimization
+    keywords: [database, db, sql, query, postgres, index, slow query, optimasi]
+    worker_agent: db-admin
+    skill_name: database-optimization
+
+# Batas & kebijakan pipeline
+limits:
+  skill_min_body_words: 200
+  skill_max_tokens: 4000
+  skill_author_max_retries: 2
+  worker_allowed_tools: [read, edit, grep, glob, bash]
+  max_fanout_level: 1
