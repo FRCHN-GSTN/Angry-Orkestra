@@ -141,6 +141,12 @@ Anggap seperti ini: folder ini adalah **dokumen asli**, folder platform hanyalah
 
 ---
 
+## ☕ Dukung Pengembang
+
+Kalau proyek ini membantu, silakan traktir saya kopi via [Saweria](https://saweria.co/Frchn).
+
+---
+
 ## 📄 Lisensi
 
 Proyek ini dirilis di bawah **MIT License** — bebas dipakai, diubah, dan dibagikan.
