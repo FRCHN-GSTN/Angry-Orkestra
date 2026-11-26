@@ -1,6 +1,9 @@
 # Abaikan artefak runtime sync (backup otomatis) — jangan masuk repo
 .sync-backup-*/
 
+# Abaikan file driver test sementara (dihapus dari folder, tapi pastikan tak ter-commit)
+.run-tests.sh
+
 # Abaikan file OS/editor
 .DS_Store
 Thumbs.db

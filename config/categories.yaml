@@ -16,6 +16,16 @@ categories:
     worker_agent: db-admin
     skill_name: database-optimization
 
+  - id: code-review
+    keywords: [review, code review, audit kode, kualitas kode, refaktor, refactor]
+    worker_agent: code-reviewer
+    skill_name: architecture-analysis
+
+  - id: skill-authoring
+    keywords: [bikin skill, tulis skill, skill baru, panduan baru, authoring]
+    worker_agent: skill-author
+    skill_name: task-clarity
+
 # Batas & kebijakan pipeline
 limits:
   skill_min_body_words: 200

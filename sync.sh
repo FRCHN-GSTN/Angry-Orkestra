@@ -22,15 +22,29 @@ TARGET_AGENTS=""   # path agents di platform
 TARGET_SKILLS=""   # path skills di platform
 
 # --- Konfigurasi lokasi per platform -------------------------------
-# Sesuaikan HOME sesuai kebutuhan (Windows: pakai %USERPROFILE% via WSL/Git Bash).
-case "$(uname -s)" in
-  MINGW*|MSYS*|CYGWIN*)
-    HOME_DIR="$USERPROFILE"
-    ;;
-  *)
-    HOME_DIR="$HOME"
-    ;;
-esac
+# Deteksi HOME: di Git Bash/MSYS/WSL $HOME sudah POSIX (paling aman utk bash).
+# Fallback USERPROFILE (format C:\Users\...) kalau $HOME tidak ter-set.
+if [ -n "${AO_HOME:-}" ]; then
+  # Override manual: set AO_HOME=/c/path/ke/home sebelum panggil sync.sh
+  HOME_DIR="$AO_HOME"
+elif [ -n "${HOME:-}" ] && [ "$HOME" != "/" ]; then
+  HOME_DIR="$HOME"
+elif [ -n "${USERPROFILE:-}" ]; then
+  # Konversi C:\Users\... → /c/Users/... untuk Git Bash/MSYS.
+  case "$USERPROFILE" in
+    [A-Za-z]:\\*)
+      _drive="$(printf '%s' "$USERPROFILE" | cut -c1 | tr 'A-Z' 'a-z')"
+      _rest="$(printf '%s' "$USERPROFILE" | cut -c3- | tr '\\' '/')"
+      HOME_DIR="/${_drive}/${_rest}"
+      ;;
+    *)
+      HOME_DIR="$USERPROFILE"
+      ;;
+  esac
+else
+  echo "Tidak dapat mendeteksi HOME (set AO_HOME secara manual)." >&2
+  exit 1
+fi
 
 declare -A AGENTS_DIR SKILLS_DIR
 AGENTS_DIR[opencode]="$HOME_DIR/.config/opencode/agents"
@@ -94,31 +108,59 @@ sync_dir() {
     echo "[skip] $label: master tidak ada ($src)"
     return
   fi
+  # Guard: dest TIDAK boleh berada di dalam src (atau sama) — cegah cp loop.
+  local src_real dest_real
+  src_real="$(cd "$src" && pwd)"
+  mkdir -p "$dest"
+  dest_real="$(cd "$dest" && pwd)"
+  case "$dest_real/" in
+    "$src_real/"*)
+      echo "[error] $label: tujuan ($dest_real) berada di dalam sumber ($src_real) — dibatalkan." >&2
+      exit 1
+      ;;
+  esac
   if [ "$DRY_RUN" = true ]; then
     echo "[dry-run] $label: $(count_entries "$src") entri → $dest"
     return
   fi
-  mkdir -p "$dest"
   # BACKUP dulu file yang akan ditimpa (mencegah kehilangan agent/skill lain).
   local ts
   ts="$(date +%Y%m%d-%H%M%S)"
-  local backup="${dest}/.sync-backup-${ts}"
+  local backup_root="${AO_BACKUP_DIR:-$HOME_DIR/.angry-orkestra/backup}"
+  local backup="${backup_root}/${TARGET}_${label}-${ts}"
   mkdir -p "$backup"
   local overwritten=0
-  while IFS= read -r -d '' destfile; do
+  while IFS= read -r -d '' srcfile; do
+    local rel="${srcfile#./}"
+    # Whitelist ekstensi + anti path traversal dari master.
+    case "$rel" in
+      *.md|*.yaml|*.yml) : ;;
+      *) continue ;;
+    esac
+    case "$rel" in
+      *..*|*/../*) echo "[skip] path tidak valid: $rel" >&2; continue ;;
+    esac
+    local destfile="$dest/$rel"
     if [ -f "$destfile" ]; then
-      cp "$destfile" "$backup/"
+      mkdir -p "$backup/$(dirname "$rel")"
+      cp "$destfile" "$backup/$rel"
       overwritten=$((overwritten+1))
     fi
-  done < <(cd "$src" && find . -type f -print0 | while IFS= read -r -d '' p; do printf '%s\0' "$dest/${p#./}"; done)
+  done < <(cd "$src" && find . -type f -print0)
 
   # Salin (overwrite) — TANPA menghapus file lain di platform (non-destructive).
   cp -r "$src"/. "$dest"/
   if [ "$overwritten" -gt 0 ]; then
-    echo "[ok] $label: $(count_entries "$src") entri → $dest (backup $overwritten file lama ke $(basename "$backup"))"
+    echo "[ok] $label: $(count_entries "$src") entri → $dest (backup $overwritten file lama ke $backup)"
   else
     echo "[ok] $label: $(count_entries "$src") entri → $dest"
   fi
+  # Prune: simpan maksimal 5 backup terbaru per platform+label.
+  local keep=5
+  while IFS= read -r -d '' old; do
+    rm -rf "$old"
+  done < <(find "$backup_root" -maxdepth 1 -mindepth 1 -type d -name "${TARGET}_${label}-*" -print0 \
+    | sort -z | head -z -n -"$keep")
 }
 
 # --- Eksekusi ------------------------------------------------------
