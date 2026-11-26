@@ -18,8 +18,6 @@ MASTER_DIR="$SCRIPT_DIR"
 DRY_RUN=false
 STATUS_ONLY=false
 TARGET=""          # "opencode" | "claude" | "cursor"
-TARGET_AGENTS=""   # path agents di platform
-TARGET_SKILLS=""   # path skills di platform
 
 # --- Konfigurasi lokasi per platform -------------------------------
 # Deteksi HOME: di Git Bash/MSYS/WSL $HOME sudah POSIX (paling aman utk bash).
@@ -138,7 +136,7 @@ sync_dir() {
       *) continue ;;
     esac
     case "$rel" in
-      *..*|*/../*) echo "[skip] path tidak valid: $rel" >&2; continue ;;
+      *..*) echo "[skip] path tidak valid: $rel" >&2; continue ;;
     esac
     local destfile="$dest/$rel"
     if [ -f "$destfile" ]; then
